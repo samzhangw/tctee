@@ -10,6 +10,9 @@
     <title>114年四技二專統測重要時程</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap">
+    <!-- QR Code 生成庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   </head>
   <body>
     <div class="app-container">
@@ -28,13 +31,8 @@
           </div>
           <ul class="menu-list">
             <li><a href="#" class="menu-item"><i class="fas fa-home"></i> 首頁</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-calendar-check"></i> 完整時程表</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-book"></i> 招生簡章</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-file-alt"></i> 歷年試題</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-university"></i> 技專校院導覽</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-chart-bar"></i> 落點分析</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-question-circle"></i> 常見問題</a></li>
-            <li><a href="#" class="menu-item"><i class="fas fa-phone-alt"></i> 聯絡我們</a></li>
+            <li><a href="https://www.techadmi.edu.tw/bbs.php?bid=479" class="menu-item"><i class="fas fa-calendar-check"></i> 完整時程表</a></li>
+            <li><a href="https://web1.tcte.edu.tw/EXAM/114_2y/" class="menu-item"><i class="fas fa-file-alt"></i> 歷年試題</a></li>
           </ul>
           <div class="menu-footer">
             <button onclick="exportAllEvents()" class="menu-export-btn">
@@ -57,23 +55,6 @@
       </div>
 
       <!-- 倒數計時區塊 -->
-      <div class="countdown-container">
-        <div class="countdown-title">
-          <i class="fas fa-hourglass-half"></i> 重要時程精確倒數
-        </div>
-        <div class="countdown-cards">
-          <div class="countdown-card" id="countdown-exam">
-            <div class="countdown-event">距離四技二專統測開始還有</div>
-            <div class="countdown-timer" data-date="114/4/26" data-time="08:30">計算中...</div>
-          </div>
-          <div class="countdown-card" id="countdown-results">
-            <div class="countdown-event">距離四技二專成績公布還有</div>
-            <div class="countdown-timer" data-date="114/5/15" data-time="14:00">計算中...</div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 全新倒數計時區塊 -->
       <div class="countdown-container">
         <div class="countdown-header">
           <i class="fas fa-hourglass-half"></i>
@@ -153,6 +134,43 @@
         </div>
       </div>
       
+      <!-- 最近即將進行的日程 -->
+      <div class="upcoming-event-container">
+        <div class="upcoming-header">
+          <i class="fas fa-bell"></i>
+          <h2>最近即將進行的日程</h2>
+        </div>
+        
+        <div class="upcoming-card" id="next-event">
+          <div class="event-status">
+            <span class="status-label">即將到來</span>
+            <span class="event-remaining" id="event-remaining-days">計算中...</span>
+          </div>
+          
+          <div class="event-content">
+            <div class="event-icon">
+              <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="event-details">
+              <div class="event-path" id="event-path">載入中...</div>
+              <div class="event-name" id="event-name">載入中...</div>
+              <div class="event-date" id="event-date">載入中...</div>
+            </div>
+          </div>
+          
+          <div class="event-actions">
+            <button class="event-action-btn" onclick="addToCalendar()">
+              <i class="fas fa-calendar-plus"></i>
+              <span>加入行事曆</span>
+            </button>
+            <button class="event-action-btn" onclick="setReminder()">
+              <i class="fas fa-bell"></i>
+              <span>設定提醒</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <main class="app-main">
         <div class="tabs">
           <div class="tab-header">
@@ -164,6 +182,7 @@
             <button class="tab-button" onclick="openTab(event, 'tab6')"><i class="fas fa-check-circle"></i> 甄選入學</button>
             <button class="tab-button" onclick="openTab(event, 'tab7')"><i class="fas fa-list-alt"></i> 聯合登記分發</button>
             <button class="tab-button" onclick="openTab(event, 'tab8')"><i class="fas fa-file-alt"></i> 申請入學</button>
+            <button class="tab-button" onclick="openTab(event, 'tab9')"><i class="fas fa-table"></i> 管道比較</button>
           </div>
           
           <!-- 特殊選才 -->
@@ -305,7 +324,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/4/29-5/6</div>
-                    <div class="timeline-event">資格審查登錄</div>
+                    <div class="timeline-event">資格審查</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -319,7 +338,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/6/5-10</div>
-                    <div class="timeline-event">網路上傳(或勾選)備審資料</div>
+                    <div class="timeline-event">上傳備審</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -333,7 +352,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/7/2-4</div>
-                    <div class="timeline-event">登記就讀志願序</div>
+                    <div class="timeline-event">登記志願</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -394,7 +413,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/5/23</div>
-                    <div class="timeline-event">公告成績複查結果</div>
+                    <div class="timeline-event">成績複查</div>
                   </div>
                 </div>
               </div>
@@ -406,21 +425,21 @@
             <div class="timeline-container">
               <h2><i class="fas fa-check-circle"></i> 甄選入學</h2>
               <div class="description">
-                <h3><i class="fas fa-info-circle"></i> 採計統測成績，招收專業群科、綜高專門學程、非應屆普通科或青年儲蓄方案者</h3>
+                <h3><i class="fas fa-info-circle"></i> 招收專業群科、綜高專門學程、非應屆普通科或青年儲蓄方案者</h3>
               </div>
               <div class="timeline">
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/4/17-30</div>
-                    <div class="timeline-event">資格審查登錄</div>
+                    <div class="timeline-event">資格審查</div>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/5/15-19</div>
-                    <div class="timeline-event">應屆生查詢第6學期修課紀錄</div>
+                    <div class="timeline-event">查詢修課</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -434,7 +453,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/6/6-13</div>
-                    <div class="timeline-event">網路上傳(或勾選)備審資料</div>
+                    <div class="timeline-event">上傳備審</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -448,7 +467,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/7/9-11</div>
-                    <div class="timeline-event">登記就讀志願序</div>
+                    <div class="timeline-event">登記志願</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -474,14 +493,14 @@
             <div class="timeline-container">
               <h2><i class="fas fa-list-alt"></i> 聯合登記分發</h2>
               <div class="description">
-                <h3><i class="fas fa-info-circle"></i> 採計統測成績，招收專業群科、綜合高中或非應屆普通科學力者</h3>
+                <h3><i class="fas fa-info-circle"></i> 招收專業群科、綜合高中或非應屆普通科學力者</h3>
               </div>
               <div class="timeline">
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/5/5-6/4</div>
-                    <div class="timeline-event">資格審查登錄</div>
+                    <div class="timeline-event">資格審查</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -495,7 +514,7 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/7/28</div>
-                    <div class="timeline-event">公告實際招生名額</div>
+                    <div class="timeline-event">公告名額</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -521,7 +540,7 @@
             <div class="timeline-container">
               <h2><i class="fas fa-file-alt"></i> 申請入學</h2>
               <div class="description">
-                <h3><i class="fas fa-info-circle"></i> 採計學測成績，招收高中普通科或其他符合四技申請入學資格者</h3>
+                <h3><i class="fas fa-info-circle"></i> 招收高中普通科或其他符合四技申請入學資格者</h3>
               </div>
               <div class="timeline">
                 <div class="timeline-item">
@@ -542,14 +561,14 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/5/1-7</div>
-                    <div class="timeline-event">網路上傳(或勾選)備審資料</div>
+                    <div class="timeline-event">上傳備審</div>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/5/12-13</div>
-                    <div class="timeline-event">應屆生查詢第6學期修課紀錄</div>
+                    <div class="timeline-event">查詢修課</div>
                   </div>
                 </div>
                 <div class="timeline-item">
@@ -563,21 +582,408 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/6/2前</div>
-                    <div class="timeline-event">各校公告正備取生名單</div>
+                    <div class="timeline-event">各校公告</div>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/6/13</div>
-                    <div class="timeline-event">正取報到截止</div>
+                    <div class="timeline-event">正取報到</div>
                   </div>
                 </div>
                 <div class="timeline-item">
                   <div class="timeline-dot"></div>
                   <div class="timeline-card">
                     <div class="timeline-date"><i class="far fa-calendar"></i> 114/6/15</div>
-                    <div class="timeline-event">備取遞補截止</div>
+                    <div class="timeline-event">備取遞補</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 招生管道比較 -->
+          <div id="tab9" class="tab-content">
+            <div class="timeline-container">
+              <h2><i class="fas fa-table"></i> 四技二專招生管道比較</h2>
+              <div class="description">
+                <h3><i class="fas fa-info-circle"></i> 各招生管道的招收對象與是否採計統測成績</h3>
+              </div>
+              
+              <div class="table-container">
+                <table class="compare-table">
+                  <thead>
+                    <tr>
+                      <th><i class="fas fa-route"></i> 招生管道</th>
+                      <th><i class="fas fa-users"></i> 招收對象</th>
+                      <th><i class="fas fa-clipboard-check"></i> 採計成績</th>
+                      <th><i class="fas fa-calendar-alt"></i> 主要日程</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- 特殊選才 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-user-graduate"></i> 特殊選才</td>
+                      <td>
+                        <span class="target-audience">具特殊才能、不同教育資歷及青年儲蓄方案者</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 特殊才能或專長</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 特殊經歷或成就</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 青年儲蓄方案</span>
+                        </div>
+                      </td>
+                      <td class="no-exam">免統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">113/12/16-20</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/2/4-9</span>
+                            <span class="mini-event">指定項目甄審</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/2/18</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 科技繁星 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-star"></i> 科技繁星</td>
+                      <td>
+                        <span class="target-audience">校內推薦在校前30%應屆生</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 專業群科</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 綜高專門學程</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 實習幹部等符合推薦標準</span>
+                        </div>
+                      </td>
+                      <td class="no-exam">免統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/3/12-19</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/4/24-30</span>
+                            <span class="mini-event">選填志願</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/5/6</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 技優保送 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-award"></i> 技優保送</td>
+                      <td>
+                        <span class="target-audience">國際或全國技藝技能競賽優勝者</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 國際技能競賽</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 全國技能競賽前3名</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 國手正備取選手</span>
+                        </div>
+                      </td>
+                      <td class="no-exam">免統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/2/17-20</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/3/10-12</span>
+                            <span class="mini-event">選填志願</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/3/18</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 技優甄審 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-medal"></i> 技優甄審</td>
+                      <td>
+                        <span class="target-audience">技藝競賽得獎或持有證照者</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 技藝技能競賽獲獎</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 專技普考證書</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 乙級以上技術士證</span>
+                        </div>
+                      </td>
+                      <td class="no-exam">免統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/4/29-5/6</span>
+                            <span class="mini-event">資格審查</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/5/19-23</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/7/8</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 統一入學測驗 -->
+                    <tr class="highlight-row">
+                      <td class="path-name"><i class="fas fa-pen"></i> 統一入學測驗</td>
+                      <td>
+                        <span class="target-audience">四技二專統一入學測驗</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 高職學生</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 綜合高中專門學程</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 普通高中同等學力者</span>
+                        </div>
+                      </td>
+                      <td class="yes-exam">必考</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">113/12/6-18</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item highlight-event">
+                            <span class="mini-date">114/4/26-27</span>
+                            <span class="mini-event">統測</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/5/15</span>
+                            <span class="mini-event">寄發成績單</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 甄選入學 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-check-circle"></i> 甄選入學</td>
+                      <td>
+                        <span class="target-audience">高職或非普通科應屆生</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 專業群科</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 綜高專門學程</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 非應屆普通科</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 青年儲蓄方案</span>
+                        </div>
+                      </td>
+                      <td class="yes-exam">採計統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/5/16-23</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/6/14-29</span>
+                            <span class="mini-event">二階甄試</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/7/15</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 聯合登記分發 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-list-alt"></i> 聯合登記分發</td>
+                      <td>
+                        <span class="target-audience">高職或非應屆普通科學力者</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 專業群科</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 綜合高中</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 非應屆普通科</span>
+                        </div>
+                      </td>
+                      <td class="yes-exam">採計統測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/7/15-23</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/7/29-8/1</span>
+                            <span class="mini-event">選填志願</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/8/7</span>
+                            <span class="mini-event">放榜</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- 申請入學 -->
+                    <tr>
+                      <td class="path-name"><i class="fas fa-file-alt"></i> 申請入學</td>
+                      <td>
+                        <span class="target-audience">高中普通科</span>
+                        <div class="detail-list">
+                          <span class="detail-item"><i class="fas fa-circle"></i> 普通高中</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 綜高學術學程</span>
+                          <span class="detail-item"><i class="fas fa-circle"></i> 其他學測成績採計對象</span>
+                        </div>
+                      </td>
+                      <td class="other-exam">採計學測</td>
+                      <td>
+                        <div class="timeline-mini">
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/1/18-20</span>
+                            <span class="mini-event">學測</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/3/17-21</span>
+                            <span class="mini-event">報名</span>
+                          </div>
+                          <div class="timeline-mini-item">
+                            <span class="mini-date">114/6/2前</span>
+                            <span class="mini-event">各校公告結果</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="compare-note">
+                <p><i class="fas fa-lightbulb"></i> 選擇招生管道小提示：</p>
+                <ul>
+                  <li>「<span class="note-highlight">免統測</span>」管道可以不必參加統一入學測驗，適合有特殊專長或成就的學生。</li>
+                  <li>「<span class="note-highlight">採計統測</span>」管道需要參加四技二專統測，適合想透過筆試展現實力的學生。</li>
+                  <li>多個管道可以同時報名，但要注意各管道時程是否重疊。</li>
+                  <li>各管道錄取後有報到期限，若同時錄取多個管道，需在期限內決定就讀學校。</li>
+                  <li>詳細資訊請參考<a href="https://www.jctv.ntut.edu.tw/" target="_blank">技專校院招生委員會聯合會</a>公告。</li>
+                </ul>
+              </div>
+              
+              <div class="compare-chart">
+                <div class="chart-header">
+                  <i class="fas fa-chart-pie"></i> 招生管道時程分布圖
+                </div>
+                <div class="timeline-chart">
+                  <div class="month-labels">
+                    <span>1月</span>
+                    <span>2月</span>
+                    <span>3月</span>
+                    <span>4月</span>
+                    <span>5月</span>
+                    <span>6月</span>
+                    <span>7月</span>
+                    <span>8月</span>
+                  </div>
+                  
+                  <div class="chart-paths">
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-user-graduate"></i> 特殊選才</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 0%; width: 16.7%; background-color: rgba(64, 158, 255, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 16.7%; width: 12.5%; background-color: rgba(100, 170, 255, 0.2);">甄審</div>
+                        <div class="bar-segment highlight" style="left: 29.2%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-star"></i> 科技繁星</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 33.3%; width: 12.5%; background-color: rgba(64, 158, 255, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 45.8%; width: 8.3%; background-color: rgba(100, 170, 255, 0.2);">選志願</div>
+                        <div class="bar-segment highlight" style="left: 54.1%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-award"></i> 技優保送</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 16.7%; width: 8.3%; background-color: rgba(64, 158, 255, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 25%; width: 8.3%; background-color: rgba(100, 170, 255, 0.2);">選志願</div>
+                        <div class="bar-segment highlight" style="left: 33.3%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-medal"></i> 技優甄審</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 49%; width: 8.3%; background-color: rgba(64, 158, 255, 0.15);">資格審查</div>
+                        <div class="bar-segment" style="left: 57.3%; width: 20%; background-color: rgba(100, 170, 255, 0.2);">甄審</div>
+                        <div class="bar-segment highlight" style="left: 77.3%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path highlight-path">
+                      <div class="path-label"><i class="fas fa-pen"></i> 統一入學測驗</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 0%; width: 16.7%; background-color: rgba(239, 68, 68, 0.1);">報名</div>
+                        <div class="bar-segment" style="left: 33.3%; width: 4.2%; background-color: rgba(239, 68, 68, 0.15);">准考證</div>
+                        <div class="bar-segment highlight danger" style="left: 45.8%; width: 8.3%;">統測</div>
+                        <div class="bar-segment" style="left: 54.1%; width: 4.2%; background-color: rgba(239, 68, 68, 0.15);">成績</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-check-circle"></i> 甄選入學</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 41.7%; width: 12.5%; background-color: rgba(16, 185, 129, 0.1);">資格審查</div>
+                        <div class="bar-segment" style="left: 54.2%; width: 8.3%; background-color: rgba(16, 185, 129, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 62.5%; width: 20.8%; background-color: rgba(16, 185, 129, 0.2);">二階甄試</div>
+                        <div class="bar-segment highlight success" style="left: 83.3%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-list-alt"></i> 聯合登記分發</div>
+                      <div class="path-bar">
+                        <div class="bar-segment" style="left: 52.1%; width: 25%; background-color: rgba(245, 158, 11, 0.1);">資格審查</div>
+                        <div class="bar-segment" style="left: 83.3%; width: 8.3%; background-color: rgba(245, 158, 11, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 91.7%; width: 4.2%; background-color: rgba(245, 158, 11, 0.2);">志願</div>
+                        <div class="bar-segment highlight warning" style="left: 95.8%; width: 4.2%;">放榜</div>
+                      </div>
+                    </div>
+                    
+                    <div class="chart-path">
+                      <div class="path-label"><i class="fas fa-file-alt"></i> 申請入學</div>
+                      <div class="path-bar">
+                        <div class="bar-segment highlight" style="left: 4.2%; width: 8.3%; background-color: rgba(139, 92, 246, 0.3);">學測</div>
+                        <div class="bar-segment" style="left: 33.3%; width: 8.3%; background-color: rgba(139, 92, 246, 0.15);">報名</div>
+                        <div class="bar-segment" style="left: 52.1%; width: 16.7%; background-color: rgba(139, 92, 246, 0.2);">二階複試</div>
+                        <div class="bar-segment" style="left: 68.8%; width: 4.2%; background-color: rgba(139, 92, 246, 0.15);">報到</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(64, 150, 255, 0.3);"></span>
+                    <span class="legend-text">放榜日期</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(239, 68, 68, 0.3);"></span>
+                    <span class="legend-text">統測日期</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(139, 92, 246, 0.3);"></span>
+                    <span class="legend-text">學測日期</span>
                   </div>
                 </div>
               </div>
@@ -602,8 +1008,27 @@
           <button class="share-button" onclick="copyShareLink()">
             <i class="fas fa-link"></i>
           </button>
+          <button class="share-button" onclick="showQRCode()">
+            <i class="fas fa-qrcode"></i>
+          </button>
         </div>
         <div id="copy-message" class="copy-message">連結已複製！</div>
+      </div>
+      
+      <!-- QR Code 模態視窗 -->
+      <div id="qrcode-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3><i class="fas fa-qrcode"></i> 掃描QR Code分享</h3>
+            <button class="modal-close" onclick="closeQRModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="qrcode-display" class="qrcode-display"></div>
+            <p class="qrcode-help">掃描QR Code即可在手機上開啟</p>
+          </div>
+        </div>
       </div>
       
       <footer class="app-footer">
@@ -773,42 +1198,8 @@
         performSearch();
       }
 
-      // 倒數計時功能
+      // 新版倒數計時功能
       function updateCountdowns() {
-        // 處理舊版倒數計時
-        const oldCountdownTimers = document.querySelectorAll('.countdown-timer');
-        
-        oldCountdownTimers.forEach(timer => {
-          const targetDateStr = timer.getAttribute('data-date');
-          const targetTimeStr = timer.getAttribute('data-time') || '00:00';
-          const targetDate = parseROCDate(targetDateStr, targetTimeStr);
-          
-          // 計算剩餘時間
-          const now = new Date();
-          const diff = targetDate - now;
-          
-          // 如果日期已過，顯示已過期
-          if (diff < 0) {
-            timer.textContent = '已過期';
-            timer.classList.add('expired');
-            return;
-          }
-          
-          // 計算天數、小時、分鐘、秒數
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          
-          // 更新顯示，為數字加上 span 元素和標籤
-          timer.innerHTML = `
-            <div class="countdown-unit"><span>${days}</span><small>天</small></div>
-            <div class="countdown-unit"><span>${hours}</span><small>時</small></div>
-            <div class="countdown-unit"><span>${minutes}</span><small>分</small></div>
-            <div class="countdown-unit"><span>${seconds}</span><small>秒</small></div>
-          `;
-        });
-        
         // 處理新版倒數計時
         const newCountdownTimers = document.querySelectorAll('.countdown-timer-new');
         
@@ -937,6 +1328,220 @@
           }, 2000);
         });
       }
+
+      // 顯示QR Code模態視窗
+      function showQRCode() {
+        const url = window.location.href;
+        const qrcodeDisplay = document.getElementById('qrcode-display');
+        qrcodeDisplay.innerHTML = '';
+        
+        // 使用qrcode-generator庫生成QR Code
+        const typeNumber = 0;
+        const errorCorrectionLevel = 'L';
+        const qr = qrcode(typeNumber, errorCorrectionLevel);
+        qr.addData(url);
+        qr.make();
+        
+        // 將生成的QR Code插入到顯示區域
+        const qrImg = qr.createImgTag(4);
+        qrcodeDisplay.innerHTML = qrImg;
+        
+        // 顯示模態視窗
+        document.getElementById('qrcode-modal').classList.add('show');
+      }
+
+      // 關閉QR Code模態視窗
+      function closeQRModal() {
+        document.getElementById('qrcode-modal').classList.remove('show');
+      }
+
+      // 點擊模態視窗外部時關閉
+      document.getElementById('qrcode-modal').addEventListener('click', function(event) {
+        if (event.target === this) {
+          closeQRModal();
+        }
+      });
+
+      // 按ESC鍵關閉模態視窗
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && document.getElementById('qrcode-modal').classList.contains('show')) {
+          closeQRModal();
+        }
+      });
+
+      // 禁止模態視窗內容部分的點擊事件冒泡
+      document.querySelector('.modal-content').addEventListener('click', function(event) {
+        event.stopPropagation();
+      });
+
+      // 找出並顯示最近即將進行的日程
+      function findUpcomingEvent() {
+        // 所有時程日期資料 (格式: [招生管道, 事件名稱, 日期, 時間, 標籤])
+        const allEvents = [
+          ["特殊選才", "報名", "113/12/16", "00:00", "報名"],
+          ["特殊選才", "指定項目甄審", "114/2/4", "00:00", "甄試"],
+          ["特殊選才", "登記就讀志願序", "114/2/12", "00:00", "志願"],
+          ["特殊選才", "放榜", "114/2/18", "12:00", "結果"],
+          ["特殊選才", "報到截止", "114/3/4", "17:00", "截止"],
+          ["科技繁星", "報名", "114/3/12", "00:00", "報名"],
+          ["科技繁星", "選填志願", "114/4/24", "00:00", "志願"],
+          ["科技繁星", "放榜", "114/5/6", "12:00", "結果"],
+          ["科技繁星", "放棄截止", "114/5/13", "17:00", "截止"],
+          ["技優保送", "報名", "114/2/17", "00:00", "報名"],
+          ["技優保送", "選填志願", "114/3/10", "00:00", "志願"],
+          ["技優保送", "放榜", "114/3/18", "12:00", "結果"],
+          ["技優保送", "報到截止", "114/3/26", "17:00", "截止"],
+          ["技優甄審", "資格審查登錄", "114/4/29", "00:00", "報名"],
+          ["技優甄審", "報名", "114/5/19", "00:00", "報名"],
+          ["技優甄審", "網路上傳備審資料", "114/6/5", "00:00", "資料"],
+          ["技優甄審", "指定項目甄審", "114/6/13", "00:00", "甄試"],
+          ["技優甄審", "登記就讀志願序", "114/7/2", "00:00", "志願"],
+          ["技優甄審", "放榜", "114/7/8", "12:00", "結果"],
+          ["技優甄審", "報到截止", "114/7/16", "17:00", "截止"],
+          ["統一入學測驗", "報名", "113/12/6", "00:00", "報名"],
+          ["統一入學測驗", "寄發准考證", "114/3/19", "12:00", "准考證"],
+          ["統一入學測驗", "統測", "114/4/26", "08:30", "考試"],
+          ["統一入學測驗", "寄發成績單", "114/5/15", "14:00", "成績"],
+          ["統一入學測驗", "公告成績複查結果", "114/5/23", "12:00", "結果"],
+          ["甄選入學", "資格審查登錄", "114/4/17", "00:00", "報名"],
+          ["甄選入學", "應屆生查詢修課紀錄", "114/5/15", "00:00", "資料"],
+          ["甄選入學", "報名", "114/5/16", "00:00", "報名"],
+          ["甄選入學", "網路上傳備審資料", "114/6/6", "00:00", "資料"],
+          ["甄選入學", "二階甄試", "114/6/14", "00:00", "甄試"],
+          ["甄選入學", "登記就讀志願序", "114/7/9", "00:00", "志願"],
+          ["甄選入學", "放榜", "114/7/15", "12:00", "結果"],
+          ["甄選入學", "報到", "114/7/17", "00:00", "報到"],
+          ["聯合登記分發", "資格審查登錄", "114/5/5", "00:00", "報名"],
+          ["聯合登記分發", "報名", "114/7/15", "00:00", "報名"],
+          ["聯合登記分發", "公告實際招生名額", "114/7/28", "12:00", "名額"],
+          ["聯合登記分發", "選填志願", "114/7/29", "00:00", "志願"],
+          ["聯合登記分發", "放榜", "114/8/7", "12:00", "結果"],
+          ["申請入學", "學測", "114/1/18", "08:30", "考試"],
+          ["申請入學", "報名", "114/3/17", "00:00", "報名"],
+          ["申請入學", "網路上傳備審資料", "114/5/1", "00:00", "資料"],
+          ["申請入學", "應屆生查詢修課紀錄", "114/5/12", "00:00", "資料"],
+          ["申請入學", "二階複試", "114/5/15", "00:00", "甄試"],
+          ["申請入學", "各校公告正備取生名單", "114/6/2", "12:00", "結果"],
+          ["申請入學", "正取報到截止", "114/6/13", "17:00", "截止"],
+          ["申請入學", "備取遞補截止", "114/6/15", "17:00", "截止"]
+        ];
+
+        // 獲取當前日期
+        const now = new Date();
+        
+        // 過濾未來事件並按日期排序
+        const futureEvents = allEvents
+          .map(event => {
+            const [path, name, dateStr, timeStr, tag] = event;
+            const eventDate = parseROCDate(dateStr, timeStr);
+            return { path, name, date: eventDate, dateStr, timeStr, tag, diffDays: Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24)) };
+          })
+          .filter(event => event.diffDays > 0)
+          .sort((a, b) => a.date - b.date);
+        
+        // 如果有未來事件，顯示最近的一個
+        if (futureEvents.length > 0) {
+          const nextEvent = futureEvents[0];
+          
+          // 更新顯示
+          document.getElementById('event-path').textContent = nextEvent.path;
+          document.getElementById('event-name').textContent = nextEvent.name;
+          
+          // 轉換民國年為西元年
+          const dateROC = nextEvent.dateStr.split('/');
+          const yearROC = parseInt(dateROC[0]);
+          const dateStr = `${yearROC}年${dateROC[1]}月${dateROC[2]}日`;
+          document.getElementById('event-date').textContent = `${dateStr} ${nextEvent.timeStr}`;
+          
+          // 更新剩餘天數
+          document.getElementById('event-remaining-days').textContent = `剩餘 ${nextEvent.diffDays} 天`;
+          
+          // 設置事件圖標
+          let iconClass = 'fa-calendar-day';
+          switch(nextEvent.tag) {
+            case '報名': iconClass = 'fa-edit'; break;
+            case '考試': iconClass = 'fa-pen'; break;
+            case '甄試': iconClass = 'fa-user-check'; break;
+            case '志願': iconClass = 'fa-tasks'; break;
+            case '結果': iconClass = 'fa-clipboard-check'; break;
+            case '成績': iconClass = 'fa-chart-bar'; break;
+            case '報到': iconClass = 'fa-check-circle'; break;
+            case '截止': iconClass = 'fa-stopwatch'; break;
+          }
+          
+          document.querySelector('.event-icon i').className = `fas ${iconClass}`;
+          
+          // 根據天數設置不同的狀態樣式
+          const statusLabel = document.querySelector('.status-label');
+          if (nextEvent.diffDays <= 3) {
+            statusLabel.textContent = '緊急';
+            statusLabel.classList.add('urgent');
+          } else if (nextEvent.diffDays <= 7) {
+            statusLabel.textContent = '即將到來';
+            statusLabel.classList.add('coming-soon');
+          }
+          
+          // 顯示卡片
+          document.getElementById('next-event').classList.add('show');
+        } else {
+          // 如果沒有未來事件，隱藏卡片
+          document.getElementById('next-event').style.display = 'none';
+          document.querySelector('.upcoming-event-container').style.display = 'none';
+        }
+      }
+      
+      // 添加到行事曆功能
+      function addToCalendar() {
+        const eventPath = document.getElementById('event-path').textContent;
+        const eventName = document.getElementById('event-name').textContent;
+        const eventDateText = document.getElementById('event-date').textContent;
+        
+        // 解析日期時間
+        const dateMatch = eventDateText.match(/(\d+)年(\d+)月(\d+)日\s+(\d+):(\d+)/);
+        if (dateMatch) {
+          const [_, year, month, day, hour, minute] = dateMatch;
+          
+          // 創建Google Calendar連結
+          const eventTitle = `${eventPath} - ${eventName}`;
+          const startDate = `${parseInt(year) + 1911}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`;
+          const endDate = `${parseInt(year) + 1911}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${(parseInt(hour) + 1).toString().padStart(2, '0')}:${minute.padStart(2, '0')}:00`;
+          
+          const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${startDate.replace(/[-:]/g, '')}/${endDate.replace(/[-:]/g, '')}&details=${encodeURIComponent('四技二專招生重要時程')}`;
+          
+          window.open(googleCalUrl, '_blank');
+        }
+      }
+      
+      // 設定提醒功能
+      function setReminder() {
+        const eventPath = document.getElementById('event-path').textContent;
+        const eventName = document.getElementById('event-name').textContent;
+        const remainingDays = document.getElementById('event-remaining-days').textContent;
+        
+        // 如果支援通知API，請求權限
+        if ('Notification' in window) {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              alert(`已設定${eventPath} - ${eventName}的提醒，將在事件前一天通知您。`);
+              // 這裡實際上需要實現後端存儲提醒的功能
+              // 或使用localStorage等方式在用戶設備上存儲
+            } else {
+              alert('需要通知權限才能設定提醒');
+            }
+          });
+        } else {
+          // 不支援通知API的回退選項
+          const confirmReminder = confirm(`是否要在${eventPath} - ${eventName}前一天收到提醒？\n(將通過瀏覽器通知提醒)`);
+          if (confirmReminder) {
+            alert('已設定提醒，請在事件前保持瀏覽器開啟以接收通知。');
+          }
+        }
+      }
+      
+      // 初始化時查找並顯示最近的事件
+      findUpcomingEvent();
+      // 每小時更新一次事件顯示
+      setInterval(findUpcomingEvent, 60 * 60 * 1000);
     </script>
     <script src="calendar-export.js"></script>
   </body>
