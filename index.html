@@ -1155,6 +1155,9 @@
         // 顯示當前頁籤內容並添加active類別給當前按鈕
         document.getElementById(tabId).classList.add("active");
         evt.currentTarget.classList.add("active");
+        
+        // 切換頁籤後更新事件狀態
+        updateTimelineItemsStatus();
       }
 
       // 側邊選單功能
@@ -1172,6 +1175,212 @@
         document.getElementById('overlay').classList.remove('active');
         document.body.classList.remove('no-scroll');
       }
+
+      // 解析中華民國日期和時間格式 (例如 113/12/16 14:00)
+      function parseROCDate(dateStr, timeStr = '00:00') {
+        // 處理類似 113/12/16-20 的日期範圍，僅取開始日期
+        if (dateStr.includes('-')) {
+          dateStr = dateStr.split('-')[0];
+        }
+        
+        // 分解日期部分
+        const parts = dateStr.split('/');
+        if (parts.length >= 3) {
+          // 轉換民國年為西元年
+          const year = parseInt(parts[0]) + 1911;
+          const month = parseInt(parts[1]) - 1; // JavaScript月份從0開始
+          const day = parseInt(parts[2]);
+          
+          // 分解時間部分
+          const timeParts = timeStr.split(':');
+          const hour = parseInt(timeParts[0]) || 0;
+          const minute = parseInt(timeParts[1]) || 0;
+          
+          return new Date(year, month, day, hour, minute, 0);
+        }
+        
+        // 預設返回當前日期
+        return new Date();
+      }
+      
+      // 獲取日期範圍的結束日期 (例如 113/12/16-20)
+      function parseROCEndDate(dateStr, timeStr = '23:59') {
+        // 處理類似 113/12/16-20 的日期範圍
+        if (dateStr.includes('-')) {
+          const rangeParts = dateStr.split('-');
+          const startDateParts = rangeParts[0].split('/');
+          
+          // 如果範圍指定了結束日
+          if (rangeParts[1] && rangeParts[1].trim() !== '') {
+            const endDay = parseInt(rangeParts[1]);
+            const year = parseInt(startDateParts[0]) + 1911;
+            const month = parseInt(startDateParts[1]) - 1; // JavaScript月份從0開始
+            
+            // 分解時間部分
+            const timeParts = timeStr.split(':');
+            const hour = parseInt(timeParts[0]) || 23;
+            const minute = parseInt(timeParts[1]) || 59;
+            
+            return new Date(year, month, endDay, hour, minute, 0);
+          }
+        }
+        
+        // 如果沒有範圍，返回起始日期的當天結束時間
+        return new Date(parseROCDate(dateStr, '23:59'));
+      }
+      
+      // 更新所有時程項目的狀態
+      function updateTimelineItemsStatus() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const now = new Date();
+        
+        timelineItems.forEach(item => {
+          const dateElement = item.querySelector('.timeline-date');
+          if (!dateElement) return;
+          
+          const dateText = dateElement.textContent;
+          // 解析日期文字，通常格式為: 113/12/16-20
+          const dateMatch = dateText.match(/(\d+\/\d+\/\d+(?:-\d+)?)/);
+          if (!dateMatch) return;
+          
+          const dateStr = dateMatch[1];
+          let timeStr = '00:00';
+          
+          // 解析起始日期和結束日期
+          const startDate = parseROCDate(dateStr, timeStr);
+          const endDate = parseROCEndDate(dateStr, '23:59');
+          
+          // 創建狀態指示器
+          let statusHTML = '';
+          let statusClass = '';
+          
+          if (now > endDate) {
+            statusHTML = '<i class="fas fa-check-circle"></i> 已結束';
+            statusClass = 'event-completed';
+          } else if (now >= startDate && now <= endDate) {
+            statusHTML = '<i class="fas fa-play-circle"></i> 進行中';
+            statusClass = 'event-in-progress';
+          } else {
+            // 判斷是否即將開始（7天內）
+            const daysUntilStart = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
+            
+            if (daysUntilStart <= 7) {
+              statusHTML = `<i class="fas fa-clock"></i> ${daysUntilStart}天後`;
+              statusClass = 'event-soon';
+            } else {
+              statusHTML = '<i class="fas fa-calendar-plus"></i> 未開始';
+              statusClass = 'event-upcoming';
+            }
+          }
+          
+          // 檢查是否已有狀態元素
+          let statusElement = item.querySelector('.event-status');
+          
+          if (!statusElement) {
+            // 創建狀態元素
+            statusElement = document.createElement('div');
+            statusElement.className = 'event-status';
+            item.querySelector('.timeline-card').appendChild(statusElement);
+          }
+          
+          // 更新狀態
+          statusElement.innerHTML = statusHTML;
+          statusElement.className = `event-status ${statusClass}`;
+          
+          // 更新整個卡片的樣式
+          const timelineCard = item.querySelector('.timeline-card');
+          timelineCard.classList.remove('event-completed', 'event-in-progress', 'event-soon', 'event-upcoming');
+          timelineCard.classList.add(statusClass);
+        });
+      }
+      
+      // 當文檔加載完成後初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        // 添加狀態指示器的樣式
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+          .event-status {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+          }
+          
+          .event-completed {
+            background-color: rgba(74, 222, 128, 0.2);
+            color: #15803d;
+          }
+          
+          .event-completed.event-status {
+            border: 1px solid rgba(74, 222, 128, 0.4);
+          }
+          
+          .event-in-progress {
+            background-color: rgba(251, 146, 60, 0.2);
+            color: #c2410c;
+          }
+          
+          .event-in-progress.event-status {
+            border: 1px solid rgba(251, 146, 60, 0.4);
+            animation: pulse 2s infinite;
+          }
+          
+          .event-soon {
+            background-color: rgba(216, 180, 254, 0.2);
+            color: #7e22ce;
+          }
+          
+          .event-soon.event-status {
+            border: 1px solid rgba(216, 180, 254, 0.4);
+          }
+          
+          .event-upcoming {
+            background-color: rgba(96, 165, 250, 0.2);
+            color: #1d4ed8;
+          }
+          
+          .event-upcoming.event-status {
+            border: 1px solid rgba(96, 165, 250, 0.4);
+          }
+          
+          .timeline-card.event-in-progress {
+            box-shadow: 0 2px 12px rgba(251, 146, 60, 0.3);
+            border-left: 4px solid #f97316;
+          }
+          
+          .timeline-card.event-soon {
+            box-shadow: 0 2px 8px rgba(216, 180, 254, 0.3);
+            border-left: 4px solid #c084fc;
+          }
+          
+          .timeline-card.event-completed {
+            opacity: 0.8;
+            border-left: 4px solid #4ade80;
+          }
+          
+          @keyframes pulse {
+            0% {
+              box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.4);
+            }
+            70% {
+              box-shadow: 0 0 0 6px rgba(251, 146, 60, 0);
+            }
+            100% {
+              box-shadow: 0 0 0 0 rgba(251, 146, 60, 0);
+            }
+          }
+        `;
+        document.head.appendChild(styleElement);
+        
+        // 初始化所有事件狀態
+        updateTimelineItemsStatus();
+        
+        // 每小時更新一次狀態
+        setInterval(updateTimelineItemsStatus, 60 * 60 * 1000);
+      });
 
       // 回到頂部按鈕功能
       const backToTopButton = document.getElementById('back-to-top');
@@ -1338,33 +1547,6 @@
           if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
           if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
         });
-      }
-      
-      // 解析中華民國日期和時間格式 (例如 113/12/16 14:00)
-      function parseROCDate(dateStr, timeStr = '00:00') {
-        // 處理類似 113/12/16-20 的日期範圍，僅取開始日期
-        if (dateStr.includes('-')) {
-          dateStr = dateStr.split('-')[0];
-        }
-        
-        // 分解日期部分
-        const parts = dateStr.split('/');
-        if (parts.length >= 3) {
-          // 轉換民國年為西元年
-          const year = parseInt(parts[0]) + 1911;
-          const month = parseInt(parts[1]) - 1; // JavaScript月份從0開始
-          const day = parseInt(parts[2]);
-          
-          // 分解時間部分
-          const timeParts = timeStr.split(':');
-          const hour = parseInt(timeParts[0]) || 0;
-          const minute = parseInt(timeParts[1]) || 0;
-          
-          return new Date(year, month, day, hour, minute, 0);
-        }
-        
-        // 預設返回當前日期
-        return new Date();
       }
       
       // 初始化並每秒更新倒數計時
@@ -1628,56 +1810,64 @@
     <!-- 表格水平滾動支援 -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+        // 表格滾動
         const tableContainer = document.querySelector('.table-container');
-        if (!tableContainer) return;
+        if (tableContainer) {
+          setupHorizontalScroll(tableContainer, '左右滑動查看完整表格');
+        }
         
-        // 檢測是否為觸控裝置
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        // 時程分布圖滾動
+        const compareChart = document.querySelector('.compare-chart');
+        if (compareChart) {
+          setupHorizontalScroll(compareChart, '左右滑動查看完整時程圖');
+        }
         
-        if (isTouchDevice) {
-          // 添加視覺指示
-          let scrollIndicator = document.createElement('div');
-          scrollIndicator.className = 'scroll-indicator';
-          scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-h"></i>';
-          tableContainer.parentNode.insertBefore(scrollIndicator, tableContainer);
+        // 設置水平滾動功能
+        function setupHorizontalScroll(container, message) {
+          // 檢測是否為觸控裝置
+          const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
           
-          // 觸控滑動事件
-          let startX, startScrollLeft;
-          
-          tableContainer.addEventListener('touchstart', function(e) {
-            startX = e.touches[0].pageX;
-            startScrollLeft = tableContainer.scrollLeft;
-          }, { passive: true });
-          
-          tableContainer.addEventListener('touchmove', function(e) {
-            if (!startX) return;
+          if (isTouchDevice) {
+            // 添加視覺指示
+            let scrollIndicator = document.createElement('div');
+            scrollIndicator.className = 'scroll-indicator';
+            scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-h"></i>';
             
-            const x = e.touches[0].pageX;
-            const distance = startX - x;
-            tableContainer.scrollLeft = startScrollLeft + distance;
+            // 設置指示訊息
+            scrollIndicator.setAttribute('data-message', message);
+            container.parentNode.insertBefore(scrollIndicator, container);
             
-            // 檢測如果是明顯的水平滑動，則阻止頁面滾動
-            if (Math.abs(distance) > 10) {
-              // 現代瀏覽器不允許在passive為true的情況下使用preventDefault
-              // 這裡保留，但不會生效，實際滾動行為由CSS處理
-              // e.preventDefault();
-            }
-          }, { passive: true });
-          
-          tableContainer.addEventListener('touchend', function() {
-            startX = null;
-          });
-          
-          // 滾動後隱藏指示器
-          tableContainer.addEventListener('scroll', function() {
-            if (scrollIndicator) {
-              scrollIndicator.style.opacity = '0';
-              setTimeout(function() {
-                scrollIndicator.remove();
-                scrollIndicator = null;
-              }, 300);
-            }
-          });
+            // 觸控滑動事件
+            let startX, startScrollLeft;
+            
+            container.addEventListener('touchstart', function(e) {
+              startX = e.touches[0].pageX;
+              startScrollLeft = container.scrollLeft;
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', function(e) {
+              if (!startX) return;
+              
+              const x = e.touches[0].pageX;
+              const distance = startX - x;
+              container.scrollLeft = startScrollLeft + distance;
+            }, { passive: true });
+            
+            container.addEventListener('touchend', function() {
+              startX = null;
+            });
+            
+            // 滾動後隱藏指示器
+            container.addEventListener('scroll', function() {
+              if (scrollIndicator) {
+                scrollIndicator.style.opacity = '0';
+                setTimeout(function() {
+                  scrollIndicator.remove();
+                  scrollIndicator = null;
+                }, 300);
+              }
+            });
+          }
         }
       });
     </script>
