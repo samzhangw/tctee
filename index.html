@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#1677ff" />
+    <meta name="theme-color" content="#4361ee" />
     <meta name="description" content="114年度四技二專統測重要時程" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&display=swap">
     <!-- QR Code 生成庫 -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   </head>
@@ -24,15 +25,30 @@
         </button>
         <div id="side-menu" class="side-menu">
           <div class="menu-header">
-            <h3><i class="fas fa-graduation-cap"></i> 選單導航</h3>
+            <h3><i class="fas fa-graduation-cap"></i> 統測導航</h3>
             <button id="menu-close" class="menu-close">
               <i class="fas fa-times"></i>
             </button>
           </div>
           <ul class="menu-list">
-            <li><a href="#" class="menu-item"><i class="fas fa-home"></i> 首頁</a></li>
-            <li><a href="https://www.techadmi.edu.tw/bbs.php?bid=479" class="menu-item"><i class="fas fa-calendar-check"></i> 完整時程表</a></li>
-            <li><a href="https://web1.tcte.edu.tw/EXAM/114_2y/" class="menu-item"><i class="fas fa-file-alt"></i> 歷年試題</a></li>
+            <li class="menu-category">常用功能</li>
+            <li><a href="#" class="menu-item active"><i class="fas fa-home"></i> 首頁儀表板</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab5'); return false;"><i class="fas fa-pen"></i> 統測時程</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab9'); return false;"><i class="fas fa-table"></i> 管道比較</a></li>
+            
+            <li class="menu-category">入學管道</li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab1'); return false;"><i class="fas fa-user-graduate"></i> 特殊選才</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab2'); return false;"><i class="fas fa-star"></i> 科技繁星</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab3'); return false;"><i class="fas fa-award"></i> 技優保送</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab4'); return false;"><i class="fas fa-medal"></i> 技優甄審</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab6'); return false;"><i class="fas fa-check-circle"></i> 甄選入學</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab7'); return false;"><i class="fas fa-list-alt"></i> 聯合登記分發</a></li>
+            <li><a href="#" class="menu-item" onclick="openTab(event, 'tab8'); return false;"><i class="fas fa-file-alt"></i> 申請入學</a></li>
+            
+            <li class="menu-category">外部資源</li>
+            <li><a href="https://www.techadmi.edu.tw/bbs.php?bid=479" class="menu-item" target="_blank"><i class="fas fa-calendar-check"></i> 官方時程表</a></li>
+            <li><a href="https://web1.tcte.edu.tw/EXAM/114_2y/" class="menu-item" target="_blank"><i class="fas fa-file-alt"></i> 歷年試題</a></li>
+            <li><a href="https://www.jctv.ntut.edu.tw/" class="menu-item" target="_blank"><i class="fas fa-school"></i> 招委會官網</a></li>
           </ul>
           <div class="menu-footer">
             <button onclick="exportAllEvents()" class="menu-export-btn">
@@ -131,6 +147,61 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      
+      <!-- 使用說明區塊 -->
+      <div class="guide-container">
+        <div class="guide-header">
+          <i class="fas fa-book"></i>
+          <h2>網站使用說明</h2>
+        </div>
+        
+        <div class="guide-content">
+          <div class="guide-section">
+            <div class="guide-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="guide-text">
+              <h3>搜尋功能</h3>
+              <p>在頂部搜尋框輸入關鍵字，可快速找到相關時程。系統會自動顯示包含該關鍵字的所有時程項目，並以黃色高亮顯示。</p>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <div class="guide-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="guide-text">
+              <h3>時程查詢</h3>
+              <p>點擊上方頁籤可切換不同入學管道，查看詳細時程。每個時程項目皆包含日期和事件說明，按時間順序排列。</p>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <div class="guide-icon">
+              <i class="fas fa-calendar-plus"></i>
+            </div>
+            <div class="guide-text">
+              <h3>匯出功能</h3>
+              <p>點擊「加入行事曆」按鈕可將時程事件匯出至 Google 日曆，點擊「設定提醒」可在事件前收到通知。也可使用側邊選單中的「匯出全部時程」功能。</p>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <div class="guide-icon">
+              <i class="fas fa-share-alt"></i>
+            </div>
+            <div class="guide-text">
+              <h3>分享功能</h3>
+              <p>使用頁面底部的分享按鈕，可將網站分享給同學朋友，支援 Facebook、LINE、Email、連結複製及 QR Code 分享。</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="guide-tip">
+          <i class="fas fa-lightbulb"></i>
+          <p>提示：建議保存此網頁，定期查看各項時程，以免錯過重要日期！</p>
         </div>
       </div>
       
@@ -1540,9 +1611,75 @@
       
       // 初始化時查找並顯示最近的事件
       findUpcomingEvent();
+      
+      // 添加卡片動畫效果
+      setTimeout(() => {
+        const upcomingCard = document.getElementById('next-event');
+        if (upcomingCard) {
+          upcomingCard.classList.add('show');
+        }
+      }, 500);
+      
       // 每小時更新一次事件顯示
       setInterval(findUpcomingEvent, 60 * 60 * 1000);
     </script>
     <script src="calendar-export.js"></script>
+    
+    <!-- 表格水平滾動支援 -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const tableContainer = document.querySelector('.table-container');
+        if (!tableContainer) return;
+        
+        // 檢測是否為觸控裝置
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        if (isTouchDevice) {
+          // 添加視覺指示
+          let scrollIndicator = document.createElement('div');
+          scrollIndicator.className = 'scroll-indicator';
+          scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-h"></i>';
+          tableContainer.parentNode.insertBefore(scrollIndicator, tableContainer);
+          
+          // 觸控滑動事件
+          let startX, startScrollLeft;
+          
+          tableContainer.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].pageX;
+            startScrollLeft = tableContainer.scrollLeft;
+          }, { passive: true });
+          
+          tableContainer.addEventListener('touchmove', function(e) {
+            if (!startX) return;
+            
+            const x = e.touches[0].pageX;
+            const distance = startX - x;
+            tableContainer.scrollLeft = startScrollLeft + distance;
+            
+            // 檢測如果是明顯的水平滑動，則阻止頁面滾動
+            if (Math.abs(distance) > 10) {
+              // 現代瀏覽器不允許在passive為true的情況下使用preventDefault
+              // 這裡保留，但不會生效，實際滾動行為由CSS處理
+              // e.preventDefault();
+            }
+          }, { passive: true });
+          
+          tableContainer.addEventListener('touchend', function() {
+            startX = null;
+          });
+          
+          // 滾動後隱藏指示器
+          tableContainer.addEventListener('scroll', function() {
+            if (scrollIndicator) {
+              scrollIndicator.style.opacity = '0';
+              setTimeout(function() {
+                scrollIndicator.remove();
+                scrollIndicator = null;
+              }, 300);
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html> 
