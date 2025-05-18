@@ -176,16 +176,14 @@
       
       <main class="app-main">
         <div class="tabs">
-          <div class="tab-header">
-            <button class="tab-button active" onclick="openTab(event, 'tab1')"><i class="fas fa-user-graduate"></i> 特殊選才</button>
-            <button class="tab-button" onclick="openTab(event, 'tab2')"><i class="fas fa-star"></i> 科技繁星</button>
-            <button class="tab-button" onclick="openTab(event, 'tab3')"><i class="fas fa-award"></i> 技優保送</button>
-            <button class="tab-button" onclick="openTab(event, 'tab4')"><i class="fas fa-medal"></i> 技優甄審</button>
-            <button class="tab-button" onclick="openTab(event, 'tab5')"><i class="fas fa-pen"></i> 統一入學測驗</button>
-            <button class="tab-button" onclick="openTab(event, 'tab6')"><i class="fas fa-check-circle"></i> 甄選入學</button>
-            <button class="tab-button" onclick="openTab(event, 'tab7')"><i class="fas fa-list-alt"></i> 聯合登記分發</button>
-            <button class="tab-button" onclick="openTab(event, 'tab8')"><i class="fas fa-file-alt"></i> 申請入學</button>
-            <button class="tab-button" onclick="openTab(event, 'tab9')"><i class="fas fa-table"></i> 管道比較</button>
+          <div class="path-selector-container">
+            <h3 class="path-selector-title"><i class="fas fa-route"></i> 選擇入學管道</h3>
+            <div class="path-selector" id="dynamic-path-selector">
+              <!-- 入學管道選擇器將在這裡動態生成 -->
+            </div>
+          </div>
+          <div class="tab-header" id="dynamic-tab-header">
+            <!-- 頁籤將動態生成，活躍的管道在前，已結束的管道在後 -->
           </div>
           
           <!-- 特殊選才 -->
@@ -1056,7 +1054,7 @@
         <i class="fas fa-search"></i>
         <span>搜尋</span>
       </button>
-      <button class="mobile-nav-btn" onclick="document.getElementById('menu-toggle').click()">
+      <button class="mobile-nav-btn" onclick="openMobileMenu()">
         <i class="fas fa-bars"></i>
         <span>選單</span>
       </button>
@@ -1065,6 +1063,16 @@
         <span>匯出</span>
       </button>
     </div>
+    
+    <script>
+      // 處理手機版菜單打開
+      function openMobileMenu() {
+        // 先更新側邊選單內容
+        updateSideMenu();
+        // 再顯示選單
+        document.getElementById('menu-toggle').click();
+      }
+    </script>
 
     <script>
       // 設置當前年份
@@ -1078,30 +1086,65 @@
           tabContents[i].classList.remove("active");
         }
         
-        // 移除所有頁籤按鈕的active類別
-        var tabButtons = document.getElementsByClassName("tab-button");
-        for (var i = 0; i < tabButtons.length; i++) {
-          tabButtons[i].classList.remove("active");
+        // 顯示當前頁籤內容
+        const tabContent = document.getElementById(tabId);
+        if (tabContent) {
+          tabContent.classList.add("active");
         }
         
-        // 顯示當前頁籤內容並添加active類別給當前按鈕
-        document.getElementById(tabId).classList.add("active");
-        evt.currentTarget.classList.add("active");
+        // 移除所有入學管道卡片的active類別
+        document.querySelectorAll('.path-card').forEach(card => {
+          card.classList.remove('active');
+        });
+        
+        // 移除所有選單路徑卡片的active類別
+        document.querySelectorAll('.menu-path-card').forEach(card => {
+          card.classList.remove('active');
+        });
+        
+        // 添加active類別給對應的入學管道卡片
+        const pathCard = document.querySelector(`.path-card[data-tab="${tabId}"]`);
+        if (pathCard) {
+          pathCard.classList.add('active');
+        }
+        
+        // 添加active類別給對應的選單路徑卡片
+        const menuPathCard = document.querySelector(`.menu-path-card[onclick*="${tabId}"]`);
+        if (menuPathCard) {
+          menuPathCard.classList.add('active');
+        }
         
         // 切換頁籤後更新事件狀態
         updateTimelineItemsStatus();
+        
+        // 關閉側邊選單（如果是在移動設備上）
+        if (window.innerWidth < 768) {
+          closeMenu();
+        }
+        
+        // 滾動到頁面頂部（平滑滾動）
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
       }
 
       // 側邊選單功能
-      document.getElementById('menu-toggle').addEventListener('click', function() {
-        document.getElementById('side-menu').classList.add('active');
-        document.getElementById('overlay').classList.add('active');
-        document.body.classList.add('no-scroll');
+      document.addEventListener('DOMContentLoaded', function() {
+        // 綁定菜單按鈕事件
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+          document.getElementById('side-menu').classList.add('active');
+          document.getElementById('overlay').classList.add('active');
+          document.body.classList.add('no-scroll');
+          
+          // 打開菜單時更新選單內容
+          updateSideMenu();
+        });
+
+        document.getElementById('menu-close').addEventListener('click', closeMenu);
+        document.getElementById('overlay').addEventListener('click', closeMenu);
       });
-
-      document.getElementById('menu-close').addEventListener('click', closeMenu);
-      document.getElementById('overlay').addEventListener('click', closeMenu);
-
+      
       function closeMenu() {
         document.getElementById('side-menu').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
@@ -1558,7 +1601,7 @@
         }
       }
       
-      // 添加「沒有未來事件」樣式
+      // 添加「沒有未來事件」樣式和新選擇管道樣式
       document.addEventListener('DOMContentLoaded', function() {
         // 將樣式添加到頭部
         const styleElement = document.createElement('style');
@@ -1588,9 +1631,376 @@
             color: #495057;
             font-weight: 500;
           }
+          
+          /* 全新的入學管道選擇器樣式 */
+          .path-selector-container {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background-color: #f8faff;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.08);
+          }
+          
+          .path-selector-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+          
+          .path-selector-title i {
+            color: #4361ee;
+          }
+          
+          .path-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+          }
+          
+          @media (max-width: 576px) {
+            .path-selector {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+          
+          .path-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0.5rem;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            text-align: center;
+          }
+          
+          .path-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+          }
+          
+          .path-card.active {
+            background-color: #4361ee;
+            color: white;
+          }
+          
+          .path-card.active i {
+            color: white;
+          }
+          
+          .path-card.active .path-name {
+            color: white;
+          }
+          
+          .path-card.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.5);
+          }
+          
+          .path-card.inactive-path {
+            opacity: 0.7;
+            background-color: #f5f5f5;
+          }
+          
+          .path-card.inactive-path:hover {
+            opacity: 0.9;
+            background-color: #eeeeee;
+          }
+          
+          .path-card.inactive-path::before {
+            content: '已結束';
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            background-color: rgba(156, 163, 175, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+          }
+          
+          .path-card.inactive-path.active {
+            background-color: #9ca3af;
+          }
+          
+          .path-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #4361ee;
+            transition: all 0.2s ease;
+          }
+          
+          .path-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2d3748;
+          }
+          
+          .path-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #fbbf24;
+            color: #7c2d12;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 2px 5px;
+            border-radius: 0 8px 0 8px;
+          }
+          
+          .path-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #e5e7eb;
+          }
+          
+          .path-progress-fill {
+            height: 100%;
+            background-color: #4361ee;
+            transition: width 0.5s ease;
+          }
+          
+          /* 隱藏舊的頁籤標頭 */
+          .tab-header {
+            display: none;
+          }
         `;
         document.head.appendChild(styleElement);
       });
+      
+      // 管道信息配置
+      const pathConfigs = [
+        { id: 'tab1', name: '特殊選才', icon: 'fa-user-graduate', key: '特殊選才' },
+        { id: 'tab2', name: '科技繁星', icon: 'fa-star', key: '科技繁星' },
+        { id: 'tab3', name: '技優保送', icon: 'fa-award', key: '技優保送' },
+        { id: 'tab4', name: '技優甄審', icon: 'fa-medal', key: '技優甄審' },
+        { id: 'tab5', name: '統一入學測驗', icon: 'fa-pen', key: '統一入學測驗' },
+        { id: 'tab6', name: '甄選入學', icon: 'fa-check-circle', key: '甄選入學' },
+        { id: 'tab7', name: '聯合登記分發', icon: 'fa-list-alt', key: '聯合登記分發' },
+        { id: 'tab8', name: '申請入學', icon: 'fa-file-alt', key: '申請入學' },
+        { id: 'tab9', name: '管道比較', icon: 'fa-table', key: null } // 比較表沒有特定管道
+      ];
+      
+      // 檢查入學管道是否已結束
+      function isPathEnded(pathKey) {
+        if (!pathKey) return false; // 管道比較頁籤永不過期
+        
+        const now = new Date();
+        // 獲取特定管道的所有事件
+        const pathEvents = allEvents
+          .filter(event => event[0] === pathKey)
+          .map(event => {
+            const dateStr = event[2];
+            const timeStr = event[3];
+            const eventDate = parseROCEndDate(dateStr, timeStr);
+            return { date: eventDate };
+          });
+        
+        // 如果該管道沒有事件，則視為未結束
+        if (pathEvents.length === 0) return false;
+        
+        // 檢查是否所有事件都已結束
+        return pathEvents.every(event => event.date < now);
+      }
+      
+      // 計算管道進度
+      function calculatePathProgress(pathKey) {
+        if (!pathKey) return 100; // 管道比較頁籤顯示100%
+        
+        const now = new Date();
+        // 獲取特定管道的所有事件
+        const pathEvents = allEvents
+          .filter(event => event[0] === pathKey)
+          .map(event => {
+            const dateStr = event[2];
+            const timeStr = event[3];
+            const eventDate = parseROCDate(dateStr, timeStr);
+            return { date: eventDate };
+          })
+          .sort((a, b) => a.date - b.date);
+        
+        // 如果該管道沒有事件，則視為完成
+        if (pathEvents.length === 0) return 100;
+        
+        // 檢查所有事件進度
+        const firstEventDate = pathEvents[0].date;
+        const lastEventDate = pathEvents[pathEvents.length - 1].date;
+        const totalDuration = lastEventDate - firstEventDate;
+        
+        // 如果全部事件已過期
+        if (now > lastEventDate) return 100;
+        
+        // 如果第一個事件還未開始
+        if (now < firstEventDate) return 0;
+        
+        // 已經進行的時間佔比
+        const elapsedTime = now - firstEventDate;
+        const progressPercent = (elapsedTime / totalDuration) * 100;
+        return Math.min(Math.max(progressPercent, 0), 100);
+      }
+      
+      // 檢查管道是否有即將到來的事件 (7天內)
+      function hasUpcomingEvents(pathKey, daysThreshold = 7) {
+        if (!pathKey) return false;
+        
+        const now = new Date();
+        const futureThreshold = new Date(now);
+        futureThreshold.setDate(futureThreshold.getDate() + daysThreshold);
+        
+        // 獲取特定管道的所有事件
+        return allEvents
+          .filter(event => event[0] === pathKey)
+          .some(event => {
+            const dateStr = event[2];
+            const timeStr = event[3];
+            const eventDate = parseROCDate(dateStr, timeStr);
+            return eventDate > now && eventDate <= futureThreshold;
+          });
+      }
+      
+      // 生成動態管道選擇器
+      function generateDynamicTabs() {
+        const pathSelector = document.getElementById('dynamic-path-selector');
+        if (!pathSelector) return;
+        
+        // 清空選擇器
+        pathSelector.innerHTML = '';
+        
+        // 將管道分為活躍和已結束
+        const activePaths = [];
+        const inactivePaths = [];
+        
+        pathConfigs.forEach(config => {
+          if (isPathEnded(config.key)) {
+            inactivePaths.push(config);
+          } else {
+            activePaths.push(config);
+          }
+        });
+        
+        // 生成管道卡片 (活躍的管道在前，已結束的管道在後)
+        const allPaths = [...activePaths, ...inactivePaths];
+        let activeCardIndex = 0; // 預設選擇第一個卡片
+        
+        allPaths.forEach((config, index) => {
+          const isInactive = inactivePaths.includes(config);
+          const hasUpcoming = hasUpcomingEvents(config.key);
+          const progress = calculatePathProgress(config.key);
+          
+          const card = document.createElement('div');
+          card.className = `path-card ${isInactive ? 'inactive-path' : ''} ${index === activeCardIndex ? 'active' : ''}`;
+          card.setAttribute('data-tab', config.id);
+          card.setAttribute('onclick', `openTab(event, '${config.id}')`);
+          
+          // 即將到來的事件標記
+          let badgeHTML = '';
+          if (hasUpcoming && !isInactive) {
+            badgeHTML = `<span class="path-badge">近期</span>`;
+          }
+          
+          // 進度條
+          const progressHTML = `
+            <div class="path-progress">
+              <div class="path-progress-fill" style="width: ${progress}%"></div>
+            </div>
+          `;
+          
+          card.innerHTML = `
+            ${badgeHTML}
+            <div class="path-icon">
+              <i class="fas ${config.icon}"></i>
+            </div>
+            <div class="path-name">${config.name}</div>
+            ${progressHTML}
+          `;
+          
+          if (isInactive) {
+            card.setAttribute('title', '此入學管道所有時程已結束');
+          }
+          
+          pathSelector.appendChild(card);
+        });
+        
+        // 修改openTab函數，支持path-card的點擊
+        const originalOpenTab = window.openTab;
+        window.openTab = function(evt, tabId) {
+          // 移除所有卡片的active類
+          document.querySelectorAll('.path-card').forEach(card => {
+            card.classList.remove('active');
+          });
+          
+          // 如果是卡片點擊，添加active類
+          if (evt && evt.currentTarget && evt.currentTarget.classList.contains('path-card')) {
+            evt.currentTarget.classList.add('active');
+          } else if (evt) {
+            // 如果是頁籤點擊，找到對應的卡片添加active類
+            const correspondingCard = document.querySelector(`.path-card[data-tab="${tabId}"]`);
+            if (correspondingCard) {
+              correspondingCard.classList.add('active');
+            }
+          }
+          
+          // 調用原始的openTab函數
+          originalOpenTab(evt, tabId);
+        };
+        
+        // 初始顯示第一個頁籤內容
+        if (allPaths.length > 0) {
+          const firstTabId = allPaths[activeCardIndex].id;
+          const firstCard = document.querySelector(`.path-card[data-tab="${firstTabId}"]`);
+          if (firstCard) {
+            openTab({ currentTarget: firstCard }, firstTabId);
+          }
+        }
+        
+        // 保存原始的openTab函數
+        window.originalOpenTab = originalOpenTab;
+      }
+      
+      // 不再使用入學管道分類選單
+      function updateSideMenu() {
+        // 處理是否有入學管道選單項目 - 如果有就移除
+        const menuCategories = document.querySelectorAll('.menu-category');
+        menuCategories.forEach(category => {
+          if (category.textContent.includes('入學管道')) {
+            // 移除該分類標題下的所有相關項目
+            let nextElement = category.nextElementSibling;
+            const itemsToRemove = [category]; // 也移除分類標題本身
+            
+            while (nextElement && !nextElement.classList.contains('menu-category')) {
+              itemsToRemove.push(nextElement);
+              nextElement = nextElement.nextElementSibling;
+            }
+            
+            itemsToRemove.forEach(item => item.remove());
+          }
+        });
+        
+        // 移除相關樣式
+        const oldStyle = document.getElementById('menu-path-styles');
+        if (oldStyle) {
+          oldStyle.remove();
+        }
+      }
       
       // 新版倒數計時功能
       function updateCountdowns() {
@@ -1663,14 +2073,21 @@
         });
       }
       
-      // 初始化動態倒數計時並每秒更新
-      generateDynamicCountdowns();
-      updateCountdowns();
-      findUpcomingEvent(); // 初始化最近事件顯示
+      // 網頁載入完成後初始化所有功能
+      document.addEventListener('DOMContentLoaded', function() {
+        // 初始化動態頁籤、倒數計時和最近事件
+        generateDynamicTabs();
+        updateSideMenu();
+        generateDynamicCountdowns();
+        updateCountdowns();
+        findUpcomingEvent();
+      });
       
-      // 每秒更新倒數計時，每小時更新倒數計時器列表和最近事件
+      // 每秒更新倒數計時，每小時更新所有動態內容
       setInterval(updateCountdowns, 1000);
       setInterval(() => {
+        generateDynamicTabs();
+        updateSideMenu();
         generateDynamicCountdowns();
         findUpcomingEvent();
       }, 60 * 60 * 1000);
