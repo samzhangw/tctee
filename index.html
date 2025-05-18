@@ -77,76 +77,8 @@
           <h2>重要時程倒數</h2>
         </div>
         
-        <div class="countdown-grid">
-          <!-- 統測倒數 -->
-          <div class="countdown-box" id="countdown-exam">
-            <div class="countdown-label">
-              <i class="fas fa-pen"></i>
-              <span>四技二專統測</span>
-            </div>
-            <div class="countdown-date">114年4月26日 08:30</div>
-            <div class="countdown-timer-new" data-date="114/4/26" data-time="08:30">
-              <div class="timer-block">
-                <div class="time-value days">00</div>
-                <div class="time-label">天</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value hours">00</div>
-                <div class="time-label">時</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value minutes">00</div>
-                <div class="time-label">分</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value seconds">00</div>
-                <div class="time-label">秒</div>
-              </div>
-            </div>
-            <div class="countdown-progress">
-              <div class="progress-bar">
-                <div class="progress-fill"></div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 成績公布倒數 -->
-          <div class="countdown-box" id="countdown-results">
-            <div class="countdown-label">
-              <i class="fas fa-clipboard-check"></i>
-              <span>四技二專成績公布</span>
-            </div>
-            <div class="countdown-date">114年5月15日 14:00</div>
-            <div class="countdown-timer-new" data-date="114/5/15" data-time="14:00">
-              <div class="timer-block">
-                <div class="time-value days">00</div>
-                <div class="time-label">天</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value hours">00</div>
-                <div class="time-label">時</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value minutes">00</div>
-                <div class="time-label">分</div>
-              </div>
-              <div class="timer-separator">:</div>
-              <div class="timer-block">
-                <div class="time-value seconds">00</div>
-                <div class="time-label">秒</div>
-              </div>
-            </div>
-            <div class="countdown-progress">
-              <div class="progress-bar">
-                <div class="progress-fill"></div>
-              </div>
-            </div>
-          </div>
+        <div class="countdown-grid" id="dynamic-countdown-grid">
+          <!-- 動態生成的倒數計時器將在這裡顯示 -->
         </div>
       </div>
       
@@ -1478,6 +1410,188 @@
         performSearch();
       }
 
+      // 所有活動數據
+      const allEvents = [
+        ["特殊選才", "報名", "113/12/16", "00:00", "報名", "fa-edit"],
+        ["特殊選才", "指定項目甄審", "114/2/4", "00:00", "甄試", "fa-user-check"],
+        ["特殊選才", "登記就讀志願序", "114/2/12", "00:00", "志願", "fa-tasks"],
+        ["特殊選才", "放榜", "114/2/18", "12:00", "結果", "fa-clipboard-check"],
+        ["特殊選才", "報到截止", "114/3/4", "17:00", "截止", "fa-stopwatch"],
+        ["科技繁星", "報名", "114/3/12", "00:00", "報名", "fa-edit"],
+        ["科技繁星", "選填志願", "114/4/24", "00:00", "志願", "fa-tasks"],
+        ["科技繁星", "放榜", "114/5/6", "12:00", "結果", "fa-clipboard-check"],
+        ["科技繁星", "放棄截止", "114/5/13", "17:00", "截止", "fa-stopwatch"],
+        ["技優保送", "報名", "114/2/17", "00:00", "報名", "fa-edit"],
+        ["技優保送", "選填志願", "114/3/10", "00:00", "志願", "fa-tasks"],
+        ["技優保送", "放榜", "114/3/18", "12:00", "結果", "fa-clipboard-check"],
+        ["技優保送", "報到截止", "114/3/26", "17:00", "截止", "fa-stopwatch"],
+        ["技優甄審", "資格審查登錄", "114/4/29", "00:00", "報名", "fa-edit"],
+        ["技優甄審", "報名", "114/5/19", "00:00", "報名", "fa-edit"],
+        ["技優甄審", "網路上傳備審資料", "114/6/5", "00:00", "資料", "fa-file-upload"],
+        ["技優甄審", "指定項目甄審", "114/6/13", "00:00", "甄試", "fa-user-check"],
+        ["技優甄審", "登記就讀志願序", "114/7/2", "00:00", "志願", "fa-tasks"],
+        ["技優甄審", "放榜", "114/7/8", "12:00", "結果", "fa-clipboard-check"],
+        ["技優甄審", "報到截止", "114/7/16", "17:00", "截止", "fa-stopwatch"],
+        ["統一入學測驗", "報名", "113/12/6", "00:00", "報名", "fa-edit"],
+        ["統一入學測驗", "寄發准考證", "114/3/19", "12:00", "准考證", "fa-id-card"],
+        ["統一入學測驗", "統測", "114/4/26", "08:30", "考試", "fa-pen"],
+        ["統一入學測驗", "寄發成績單", "114/5/15", "14:00", "成績", "fa-chart-bar"],
+        ["統一入學測驗", "公告成績複查結果", "114/5/23", "12:00", "結果", "fa-clipboard-check"],
+        ["甄選入學", "資格審查登錄", "114/4/17", "00:00", "報名", "fa-edit"],
+        ["甄選入學", "應屆生查詢修課紀錄", "114/5/15", "00:00", "資料", "fa-file-alt"],
+        ["甄選入學", "報名", "114/5/16", "00:00", "報名", "fa-edit"],
+        ["甄選入學", "網路上傳備審資料", "114/6/6", "00:00", "資料", "fa-file-upload"],
+        ["甄選入學", "二階甄試", "114/6/14", "00:00", "甄試", "fa-user-check"],
+        ["甄選入學", "登記就讀志願序", "114/7/9", "00:00", "志願", "fa-tasks"],
+        ["甄選入學", "放榜", "114/7/15", "12:00", "結果", "fa-clipboard-check"],
+        ["甄選入學", "報到", "114/7/17", "00:00", "報到", "fa-check-circle"],
+        ["聯合登記分發", "資格審查登錄", "114/5/5", "00:00", "報名", "fa-edit"],
+        ["聯合登記分發", "報名", "114/7/15", "00:00", "報名", "fa-edit"],
+        ["聯合登記分發", "公告實際招生名額", "114/7/28", "12:00", "名額", "fa-list-ol"],
+        ["聯合登記分發", "選填志願", "114/7/29", "00:00", "志願", "fa-tasks"],
+        ["聯合登記分發", "放榜", "114/8/7", "12:00", "結果", "fa-clipboard-check"],
+        ["申請入學", "學測", "114/1/18", "08:30", "考試", "fa-pen"],
+        ["申請入學", "報名", "114/3/17", "00:00", "報名", "fa-edit"],
+        ["申請入學", "網路上傳備審資料", "114/5/1", "00:00", "資料", "fa-file-upload"],
+        ["申請入學", "應屆生查詢修課紀錄", "114/5/12", "00:00", "資料", "fa-file-alt"],
+        ["申請入學", "二階複試", "114/5/15", "00:00", "甄試", "fa-user-check"],
+        ["申請入學", "各校公告正備取生名單", "114/6/2", "12:00", "結果", "fa-clipboard-check"],
+        ["申請入學", "正取報到截止", "114/6/13", "17:00", "截止", "fa-stopwatch"],
+        ["申請入學", "備取遞補截止", "114/6/15", "17:00", "截止", "fa-stopwatch"]
+      ];
+      
+      // 找出並顯示最近的未來活動
+      function findUpcomingEvents() {
+        // 獲取當前日期
+        const now = new Date();
+        
+        // 過濾未來事件並按日期排序
+        const futureEvents = allEvents
+          .map(event => {
+            const [path, name, dateStr, timeStr, tag, icon] = event;
+            const eventDate = parseROCDate(dateStr, timeStr);
+            return { 
+              path, 
+              name, 
+              date: eventDate, 
+              dateStr, 
+              timeStr, 
+              tag, 
+              icon,
+              diffDays: Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24)),
+              diffMs: eventDate - now
+            };
+          })
+          .filter(event => event.diffMs > 0)
+          .sort((a, b) => a.date - b.date);
+        
+        return futureEvents.slice(0, 2); // 返回最近的兩個事件
+      }
+      
+      // 生成倒數計時器HTML
+      function generateCountdownHTML(event, index) {
+        // 轉換民國年為顯示格式
+        const dateParts = event.dateStr.split('/');
+        const formattedDate = `${dateParts[0]}年${dateParts[1]}月${dateParts[2]}日 ${event.timeStr}`;
+        
+        return `
+          <div class="countdown-box" id="countdown-${index}">
+            <div class="countdown-label">
+              <i class="fas ${event.icon}"></i>
+              <span>${event.path} - ${event.name}</span>
+            </div>
+            <div class="countdown-date">${formattedDate}</div>
+            <div class="countdown-timer-new" data-date="${event.dateStr}" data-time="${event.timeStr}">
+              <div class="timer-block">
+                <div class="time-value days">00</div>
+                <div class="time-label">天</div>
+              </div>
+              <div class="timer-separator">:</div>
+              <div class="timer-block">
+                <div class="time-value hours">00</div>
+                <div class="time-label">時</div>
+              </div>
+              <div class="timer-separator">:</div>
+              <div class="timer-block">
+                <div class="time-value minutes">00</div>
+                <div class="time-label">分</div>
+              </div>
+              <div class="timer-separator">:</div>
+              <div class="timer-block">
+                <div class="time-value seconds">00</div>
+                <div class="time-label">秒</div>
+              </div>
+            </div>
+            <div class="countdown-progress">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // 動態生成倒數計時器
+      function generateDynamicCountdowns() {
+        const countdownGrid = document.getElementById('dynamic-countdown-grid');
+        if (!countdownGrid) return;
+        
+        // 獲取最近的兩個事件
+        const upcomingEvents = findUpcomingEvents();
+        
+        // 清空容器
+        countdownGrid.innerHTML = '';
+        
+        // 生成倒數計時器
+        upcomingEvents.forEach((event, index) => {
+          countdownGrid.innerHTML += generateCountdownHTML(event, index);
+        });
+        
+        // 如果沒有未來事件，顯示提示訊息
+        if (upcomingEvents.length === 0) {
+          countdownGrid.innerHTML = `
+            <div class="no-events-message">
+              <i class="fas fa-calendar-check"></i>
+              <p>所有重要時程已結束</p>
+            </div>
+          `;
+        }
+      }
+      
+      // 添加「沒有未來事件」樣式
+      document.addEventListener('DOMContentLoaded', function() {
+        // 將樣式添加到頭部
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+          .no-events-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            width: 100%;
+            margin: 1rem 0;
+          }
+          
+          .no-events-message i {
+            font-size: 3rem;
+            color: #4361ee;
+            margin-bottom: 1rem;
+          }
+          
+          .no-events-message p {
+            font-size: 1.2rem;
+            color: #495057;
+            font-weight: 500;
+          }
+        `;
+        document.head.appendChild(styleElement);
+      });
+      
       // 新版倒數計時功能
       function updateCountdowns() {
         // 處理新版倒數計時
@@ -1549,9 +1663,17 @@
         });
       }
       
-      // 初始化並每秒更新倒數計時
+      // 初始化動態倒數計時並每秒更新
+      generateDynamicCountdowns();
       updateCountdowns();
+      findUpcomingEvent(); // 初始化最近事件顯示
+      
+      // 每秒更新倒數計時，每小時更新倒數計時器列表和最近事件
       setInterval(updateCountdowns, 1000);
+      setInterval(() => {
+        generateDynamicCountdowns();
+        findUpcomingEvent();
+      }, 60 * 60 * 1000);
 
       // 分享功能
       function shareOnFacebook() {
@@ -1629,68 +1751,8 @@
 
       // 找出並顯示最近即將進行的日程
       function findUpcomingEvent() {
-        // 所有時程日期資料 (格式: [招生管道, 事件名稱, 日期, 時間, 標籤])
-        const allEvents = [
-          ["特殊選才", "報名", "113/12/16", "00:00", "報名"],
-          ["特殊選才", "指定項目甄審", "114/2/4", "00:00", "甄試"],
-          ["特殊選才", "登記就讀志願序", "114/2/12", "00:00", "志願"],
-          ["特殊選才", "放榜", "114/2/18", "12:00", "結果"],
-          ["特殊選才", "報到截止", "114/3/4", "17:00", "截止"],
-          ["科技繁星", "報名", "114/3/12", "00:00", "報名"],
-          ["科技繁星", "選填志願", "114/4/24", "00:00", "志願"],
-          ["科技繁星", "放榜", "114/5/6", "12:00", "結果"],
-          ["科技繁星", "放棄截止", "114/5/13", "17:00", "截止"],
-          ["技優保送", "報名", "114/2/17", "00:00", "報名"],
-          ["技優保送", "選填志願", "114/3/10", "00:00", "志願"],
-          ["技優保送", "放榜", "114/3/18", "12:00", "結果"],
-          ["技優保送", "報到截止", "114/3/26", "17:00", "截止"],
-          ["技優甄審", "資格審查登錄", "114/4/29", "00:00", "報名"],
-          ["技優甄審", "報名", "114/5/19", "00:00", "報名"],
-          ["技優甄審", "網路上傳備審資料", "114/6/5", "00:00", "資料"],
-          ["技優甄審", "指定項目甄審", "114/6/13", "00:00", "甄試"],
-          ["技優甄審", "登記就讀志願序", "114/7/2", "00:00", "志願"],
-          ["技優甄審", "放榜", "114/7/8", "12:00", "結果"],
-          ["技優甄審", "報到截止", "114/7/16", "17:00", "截止"],
-          ["統一入學測驗", "報名", "113/12/6", "00:00", "報名"],
-          ["統一入學測驗", "寄發准考證", "114/3/19", "12:00", "准考證"],
-          ["統一入學測驗", "統測", "114/4/26", "08:30", "考試"],
-          ["統一入學測驗", "寄發成績單", "114/5/15", "14:00", "成績"],
-          ["統一入學測驗", "公告成績複查結果", "114/5/23", "12:00", "結果"],
-          ["甄選入學", "資格審查登錄", "114/4/17", "00:00", "報名"],
-          ["甄選入學", "應屆生查詢修課紀錄", "114/5/15", "00:00", "資料"],
-          ["甄選入學", "報名", "114/5/16", "00:00", "報名"],
-          ["甄選入學", "網路上傳備審資料", "114/6/6", "00:00", "資料"],
-          ["甄選入學", "二階甄試", "114/6/14", "00:00", "甄試"],
-          ["甄選入學", "登記就讀志願序", "114/7/9", "00:00", "志願"],
-          ["甄選入學", "放榜", "114/7/15", "12:00", "結果"],
-          ["甄選入學", "報到", "114/7/17", "00:00", "報到"],
-          ["聯合登記分發", "資格審查登錄", "114/5/5", "00:00", "報名"],
-          ["聯合登記分發", "報名", "114/7/15", "00:00", "報名"],
-          ["聯合登記分發", "公告實際招生名額", "114/7/28", "12:00", "名額"],
-          ["聯合登記分發", "選填志願", "114/7/29", "00:00", "志願"],
-          ["聯合登記分發", "放榜", "114/8/7", "12:00", "結果"],
-          ["申請入學", "學測", "114/1/18", "08:30", "考試"],
-          ["申請入學", "報名", "114/3/17", "00:00", "報名"],
-          ["申請入學", "網路上傳備審資料", "114/5/1", "00:00", "資料"],
-          ["申請入學", "應屆生查詢修課紀錄", "114/5/12", "00:00", "資料"],
-          ["申請入學", "二階複試", "114/5/15", "00:00", "甄試"],
-          ["申請入學", "各校公告正備取生名單", "114/6/2", "12:00", "結果"],
-          ["申請入學", "正取報到截止", "114/6/13", "17:00", "截止"],
-          ["申請入學", "備取遞補截止", "114/6/15", "17:00", "截止"]
-        ];
-
-        // 獲取當前日期
-        const now = new Date();
-        
-        // 過濾未來事件並按日期排序
-        const futureEvents = allEvents
-          .map(event => {
-            const [path, name, dateStr, timeStr, tag] = event;
-            const eventDate = parseROCDate(dateStr, timeStr);
-            return { path, name, date: eventDate, dateStr, timeStr, tag, diffDays: Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24)) };
-          })
-          .filter(event => event.diffDays > 0)
-          .sort((a, b) => a.date - b.date);
+        // 獲取最近的未來事件
+        const futureEvents = findUpcomingEvents();
         
         // 如果有未來事件，顯示最近的一個
         if (futureEvents.length > 0) {
@@ -1710,19 +1772,7 @@
           document.getElementById('event-remaining-days').textContent = `剩餘 ${nextEvent.diffDays} 天`;
           
           // 設置事件圖標
-          let iconClass = 'fa-calendar-day';
-          switch(nextEvent.tag) {
-            case '報名': iconClass = 'fa-edit'; break;
-            case '考試': iconClass = 'fa-pen'; break;
-            case '甄試': iconClass = 'fa-user-check'; break;
-            case '志願': iconClass = 'fa-tasks'; break;
-            case '結果': iconClass = 'fa-clipboard-check'; break;
-            case '成績': iconClass = 'fa-chart-bar'; break;
-            case '報到': iconClass = 'fa-check-circle'; break;
-            case '截止': iconClass = 'fa-stopwatch'; break;
-          }
-          
-          document.querySelector('.event-icon i').className = `fas ${iconClass}`;
+          document.querySelector('.event-icon i').className = `fas ${nextEvent.icon}`;
           
           // 根據天數設置不同的狀態樣式
           const statusLabel = document.querySelector('.status-label');
